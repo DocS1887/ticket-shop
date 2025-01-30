@@ -10,7 +10,7 @@ import { useEventContext } from "./eventContext";
 
 const TimerContext = createContext();
 
-const RESERVATION_TIME = 1 * 60; // 15 Minuten in Sekunden
+const RESERVATION_TIME = 15 * 60; // 15 Minuten in Sekunden
 
 export function TimerProvider({ children }) {
   const [reservations, setReservations] = useState({});

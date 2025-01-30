@@ -2,6 +2,7 @@
 import { useTimer } from "@/app/context/timerContext";
 import ReservationTimer from "@/app/components/ReservationTimer";
 import { formatDate, formatTime } from "@/app/components/DateFormatter";
+import OrderSummary from "@/app/components/OrderSummary";
 
 export default function ShoppingCart() {
   const { reservations, removeReservation } = useTimer();
@@ -27,11 +28,12 @@ export default function ShoppingCart() {
             key={reservationId}
             className="bg-white rounded-lg shadow-lg p-6"
           >
+            <div className="flex justify-end items-center mb-4">
+              <OrderSummary key={reservationId} reservationId={reservationId} />
+            </div>
+
             {/* Timer und Entfernen-Button */}
             <div className="flex justify-between items-center mb-4">
-              <div className="bg-blue-50 px-4 py-2 rounded-full">
-                <ReservationTimer reservationId={reservationId} />
-              </div>
               <button
                 onClick={() => removeReservation(reservationId)}
                 className="text-red-600 hover:text-red-800"

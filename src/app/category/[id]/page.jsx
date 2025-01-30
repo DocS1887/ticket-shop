@@ -94,7 +94,9 @@ export default function CategoryPage() {
               <div className="flex flex-col items-center space-y-2">
                 <div className="text-2xl">
                   ab €{" "}
-                  {Math.min(...event.event_price.map((price) => price.price))}
+                  {Math.min(
+                    ...event.event_price.map((price) => price.price),
+                  ).toFixed(2)}
                 </div>
                 <Link href={`/eventDetails/${event.id}`}>
                   <Button text="Weiter" />

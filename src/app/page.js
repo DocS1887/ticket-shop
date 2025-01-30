@@ -18,25 +18,25 @@ export default function Home() {
     const minPrice = Math.min(...event.event_price.map((price) => price.price));
 
     return (
-      <div className="flex flex-col items-center w-56">
-        <div className="relative w-56 h-40">
-          {event.image_url && (
-            <Image
-              src={event.image_url}
-              alt={event.name}
-              fill
-              className="object-cover rounded-lg"
-            />
-          )}
+      <Link href={`/eventDetails/${event.id}`}>
+        <div className="flex flex-col items-center w-56">
+          <div className="relative w-56 h-40">
+            {event.image_url && (
+              <Image
+                src={event.image_url}
+                alt={event.name}
+                fill
+                className="object-cover rounded-lg"
+              />
+            )}
+          </div>
+          <h3 className="mt-2 text-xl font-semibold truncate w-full text-center">
+            {event.name}
+          </h3>
+
+          <p className="text-lg mt-1">Tickets ab € {minPrice.toFixed(2)}</p>
         </div>
-        <h3 className="mt-2 text-lg font-semibold truncate w-full text-center">
-          {event.name}
-        </h3>
-        <p className="text-lg font-bold mt-1">ab € {minPrice}</p>
-        <Link href={`/eventDetails/${event.id}`}>
-          <Button text="Tickets" className="mt-2" />
-        </Link>
-      </div>
+      </Link>
     );
   };
 
