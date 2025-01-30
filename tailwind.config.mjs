@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -7,9 +7,15 @@ export default {
   ],
   theme: {
     extend: {
+      width: {
+        '128': '32rem',
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        'accent': 'var(--accent-color)',
+        'foreground-light': 'var(--foreground-light)',
+        'header': 'var(--header)',
       },
     },
   },

@@ -1,101 +1,130 @@
+"use client";
+
+import { useEventContext } from "./context/eventContext";
 import Image from "next/image";
+import Button from "./components/Button";
+import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const { events, loading } = useEventContext();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+  if (loading) return <div>Loading...</div>;
+
+  const homepageEvents = events.filter((event) => event.is_homepage);
+  const highlightEvents = events.filter((event) => event.is_highlight);
+
+  const EventCard = ({ event }) => {
+    const minPrice = Math.min(...event.event_price.map((price) => price.price));
+
+    return (
+      <div className="flex flex-col items-center w-56">
+        <div className="relative w-56 h-40">
+          {event.image_url && (
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src={event.image_url}
+              alt={event.name}
+              fill
+              className="object-cover rounded-lg"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        <h3 className="mt-2 text-lg font-semibold truncate w-full text-center">
+          {event.name}
+        </h3>
+        <p className="text-lg font-bold mt-1">ab € {minPrice}</p>
+        <Link href={`/eventDetails/${event.id}`}>
+          <Button text="Tickets" className="mt-2" />
+        </Link>
+      </div>
+    );
+  };
+
+  const EventSection = ({ title, events }) => {
+    const [startIndex, setStartIndex] = useState(0);
+    const eventsToShow = events.slice(startIndex, startIndex + 5);
+
+    const handlePrevious = () => {
+      setStartIndex(Math.max(0, startIndex - 5));
+    };
+
+    const handleNext = () => {
+      setStartIndex(Math.min(startIndex + 5, events.length - 5));
+    };
+
+    return (
+      <section className="mb-12">
+        <h2 className="text-3xl font-bold mb-6 text-center">{title}</h2>
+        <div className="relative">
+          {startIndex > 0 && (
+            <button
+              onClick={handlePrevious}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 bg-white rounded-full p-2 shadow-lg z-10"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
+              </svg>
+            </button>
+          )}
+
+          <div className="flex justify-center gap-4">
+            {eventsToShow.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+
+          {startIndex < events.length - 5 && (
+            <button
+              onClick={handleNext}
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 bg-white rounded-full p-2 shadow-lg z-10"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
+      </section>
+    );
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      <div className="bg-accent shadow-lg shadow-foreground p-4">
+        {highlightEvents.length > 0 && (
+          <EventSection title="Highlights" events={highlightEvents} />
+        )}
+      </div>
+      <div className="p-4">
+        {homepageEvents.length > 0 && (
+          <EventSection
+            // title="Aktuelle Veranstaltungen"
+            events={homepageEvents}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        )}
+      </div>
     </div>
   );
 }
