@@ -1,8 +1,7 @@
+"use client";
 
-'use client'
-
-import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/app/lib/superbase';
+import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "@/app/lib/superbase";
 
 // AuthContext erstellen
 const AuthContext = createContext({});
@@ -20,7 +19,6 @@ export const AuthProvider = ({ children }) => {
     city: null,
     country: null,
     userRole: null,
-    // Füge hier alle anderen Felder hinzu, die du brauchst
   });
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +37,9 @@ export const AuthProvider = ({ children }) => {
       }
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         getUserDetails(session.user.id).then((userData) => {
@@ -55,20 +55,38 @@ export const AuthProvider = ({ children }) => {
 
   const getUserDetails = async (userId) => {
     const { data, error } = await supabase
-      .from('users')
-      .select('firstname, lastname, birthday, street, zipcode, city, country, userRole')
-      .eq('id', userId)
+      .from("users")
+      .select(
+        "firstname, lastname, birthday, street, housenumber, zipcode, city, country, userRole",
+      )
+      .eq("id", userId)
       .single();
 
     if (error) {
-      console.error('Fehler beim Abrufen des Benutzers:', error.message);
+      console.error("Fehler beim Abrufen des Benutzers:", error.message);
+      return null;
+    }
+    return data;
+  };
+
+  const updateUserDetails = async (userId, userData) => {
+    const { data, error } = await supabase
+      .from("users")
+      .update(userData)
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      console.error("Fehler beim Aktualisieren des Benutzers:", error.message);
       return null;
     }
     return data;
   };
 
   return (
-    <AuthContext.Provider value={{ user, userData, loading }}>
+    <AuthContext.Provider
+      value={{ user, userData, loading, updateUserDetails }}
+    >
       {children}
     </AuthContext.Provider>
   );

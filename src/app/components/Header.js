@@ -74,7 +74,7 @@ export default function Header() {
                           <h5>Admin-Dashboard</h5>
                         </Link>
                         <Link
-                          href="/shoppingCard"
+                          href="/shoppingCart"
                           className="lg:hover:text-accent"
                         >
                           <h5>Warenkorb</h5>
@@ -108,7 +108,9 @@ export default function Header() {
 
         <div className="flex flex-col md:flex-row md:flex-nowrap row-auto items-center p-4 ">
           <div className="text-center md:text-start">
-            <Image src={logo} alt="Logo der Seite" className="w-128 h-auto" />
+            <Link href="/">
+              <Image src={logo} alt="Logo der Seite" className="w-128 h-auto" />
+            </Link>
           </div>
           <div className="flex align-center justify-center p-4 w-full">
             <form>

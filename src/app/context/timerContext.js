@@ -16,6 +16,28 @@ export function TimerProvider({ children }) {
   const [reservations, setReservations] = useState({});
   const { supabase, refreshEvents } = useEventContext();
 
+  // Laden der Reservierungen aus localStorage beim Start
+  useEffect(() => {
+    const savedReservations = localStorage.getItem("reservations");
+    if (savedReservations) {
+      const parsed = JSON.parse(savedReservations);
+      // Prüfe ob die Reservierungen noch gültig sind
+      const now = Date.now();
+      const valid = Object.entries(parsed).reduce((acc, [id, reservation]) => {
+        if (reservation.endTime > now) {
+          acc[id] = reservation;
+        }
+        return acc;
+      }, {});
+      setReservations(valid);
+    }
+  }, []);
+
+  // Speichern der Reservierungen in localStorage bei Änderungen
+  useEffect(() => {
+    localStorage.setItem("reservations", JSON.stringify(reservations));
+  }, [reservations]);
+
   // Handler für abgelaufene Reservierungen
   const handleExpiredReservation = useCallback(
     async (reservationId) => {
@@ -95,6 +117,30 @@ export function TimerProvider({ children }) {
     return () => clearInterval(interval);
   }, [handleExpiredReservation]);
 
+  // Cleanup-Funktion für abgelaufene Reservierungen
+  useEffect(() => {
+    const cleanup = () => {
+      const saved = localStorage.getItem("reservations");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const now = Date.now();
+        const valid = Object.entries(parsed).reduce(
+          (acc, [id, reservation]) => {
+            if (reservation.endTime > now) {
+              acc[id] = reservation;
+            }
+            return acc;
+          },
+          {},
+        );
+        localStorage.setItem("reservations", JSON.stringify(valid));
+      }
+    };
+
+    window.addEventListener("beforeunload", cleanup);
+    return () => window.removeEventListener("beforeunload", cleanup);
+  }, []);
+
   // Neue Reservierung hinzufügen
   const addReservation = useCallback((reservationId, reservationDetails) => {
     if (!reservationId) {
@@ -115,7 +161,7 @@ export function TimerProvider({ children }) {
         endTime,
         timeLeft: RESERVATION_TIME,
         id: reservationId,
-        ...reservationDetails, // Alle zusätzlichen Details
+        ...reservationDetails, // Alle Event-Details
       },
     }));
   }, []);
