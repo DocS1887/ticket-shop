@@ -53,8 +53,68 @@ export default function Payment() {
           <h1 className="text-2xl font-bold mb-6">Zahlungsinformationen</h1>
           <div className="bg-white rounded-lg shadow-lg p-6">
             <form className="space-y-6">
-              <div>Hier stehen die Banken</div>
-              {/* Weitere Formularfelder */}
+              <div className="flex items-center p-2 place-content-between border border-accent rounded-lg">
+                <div>
+                  <p className="font-bold flex items-start">Bankeinzug</p>
+                  <p className="text-sm text-gray-400 pt-2">
+                    Bequem vom Konto abbuchen lassen
+                  </p>
+                </div>
+                <input type="radio" name="payment" className="w-4 h-4" />
+              </div>
+
+              <div className="flex items-center p-2 place-content-between border border-accent rounded-lg">
+                <div>
+                  <p className="font-bold flex items-start">
+                    Sofortüberweisung
+                  </p>
+                  <p className="text-sm text-gray-400 pt-2">
+                    Direkt mit Onlineueberweisung bezahlen.
+                  </p>
+                </div>
+                <input type="radio" name="payment" className="w-4 h-4" />
+              </div>
+
+              <div className="flex items-center p-2 place-content-between border border-accent rounded-lg">
+                <div>
+                  <p className="font-bold flex items-start">Klarna</p>
+                  <p className="text-sm text-gray-400 pt-2">
+                    Auf Rechnung in 30 Tagen bezahlen.
+                  </p>
+                </div>
+                <input type="radio" name="payment" className="w-4 h-4" />
+              </div>
+
+              <div className="flex items-center p-2 place-content-between border border-accent rounded-lg">
+                <div>
+                  <p className="font-bold flex items-start">
+                    Apple Pay | Google Pay
+                  </p>
+                  <p className="text-sm text-gray-400 pt-2">
+                    Zahlung mit Google oder Apple Pay.
+                  </p>
+                </div>
+                <input type="radio" name="payment" className="w-4 h-4" />
+              </div>
+              <div className="flex items-center p-2 place-content-between border border-accent rounded-lg">
+                <div>
+                  <p className="font-bold flex items-start">PayPal</p>
+                  <p className="text-sm text-gray-400 pt-2">
+                    Einfach, schnell und sicher mit PayPal bezahlen.
+                  </p>
+                </div>
+                <input type="radio" name="payment" className="w-4 h-4" />
+              </div>
+
+              <div className="flex items-center p-2 place-content-between border border-accent rounded-lg">
+                <div>
+                  <p className="font-bold flex items-start">giropay</p>
+                  <p className="text-sm text-gray-400 pt-2">
+                    Das Online-Bezahlverfahren deiner Bank.
+                  </p>
+                </div>
+                <input type="radio" name="payment" className="w-4 h-4" />
+              </div>
             </form>
           </div>
         </div>
@@ -95,7 +155,7 @@ export default function Payment() {
           transition-colors duration-200 focus:outline-none focus:ring-2
           focus:ring-blue-500 focus:ring-offset-2"
             >
-              Weiter zur Zahlung
+              kostenpflichtig bestellen
             </button>
             <button
               onClick={() => router.push("/shoppingCart")}
